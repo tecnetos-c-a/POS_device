@@ -2,7 +2,7 @@
  * WebSocketClient.ino
  *
  *  Created on: 24.05.2015
- *
+ *	GRUPO TECNETOS C.A. 
  */
 
 #include <Arduino.h>
