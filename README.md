@@ -1,1 +1,1 @@
-# POS_device
+PlataformaPago
