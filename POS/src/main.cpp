@@ -18,19 +18,26 @@
 #include <Wire.h>			   // This library is already built in to the Arduino IDE
 #include <LiquidCrystal_I2C.h> //This library you can add via Include Library > Manage Library >
 
+#include <U8g2lib.h>
+
 #include <SPI.h>
 #include <MFRC522.h>
 #include <Key.h>
 #include <Keypad.h>
 #include <ctype.h>
 
-//------------Display---------------------
+//------------Display	1---------------------
 
 // Inicializar el LCD
 int DTYPE = 0X27,							//configuracion[2].toInt(),
 	DCOLS = 20,								//configuracion[3].toInt(),
 	DROWS = 2;								//configuracion[4].toInt();
 LiquidCrystal_I2C lcd(DTYPE, DCOLS, DROWS); //creacion de objeto
+
+//------------Display	2----------------------
+
+U8G2_SSD1306_128X64_NONAME_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 17, /* data=*/ 4, /* cs=*/ 15, /* dc=*/ 2, /* reset=*/ 16);
+
 
 //-------------Teclado-----------------------
 const byte ROWS = 4; //four rows
@@ -44,9 +51,63 @@ char keys[ROWS][COLS] = {
 byte rowPins[ROWS] = {12, 13, 14, 15}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {18, 19, 20, 21}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+int checker = 0;
+char maxdig[20];
 unsigned int pagos[3] = {0, 0, 0};
 String mensa[3];
 unsigned int monto;
+
+void keypadamount(){
+
+   u8g2.firstPage();
+    do {
+      u8g2.setFont(u8g2_font_ncenB14_tr);
+      u8g2.drawStr(0,20,"Monto: ");
+    } while ( u8g2.nextPage() );
+  
+  while (checker < 20){
+
+   char key = keypad.getKey();
+
+   if (key != NO_KEY){
+    
+   String virtkey = String(key);
+   
+   if (virtkey == "*"){
+    memset(maxdig, 0, 20);
+    checker = 20;
+   }
+
+   if (virtkey == "#"){
+      u8g2.firstPage();
+    do {
+      u8g2.setFont(u8g2_font_ncenB14_tr);
+      u8g2.drawStr(0,20,"...");
+    } while ( u8g2.nextPage() );
+    
+    checker = 20;
+   }
+   else{
+
+    maxdig[checker] = key;
+    checker++;
+    
+    Serial.println(maxdig);
+
+    u8g2.firstPage();
+    do {
+      u8g2.setFont(u8g2_font_ncenB14_tr);
+      u8g2.drawStr(0,20,"Monto: ");
+      u8g2.drawStr(0,40, maxdig);
+
+    } while ( u8g2.nextPage() );
+
+   }
+   }
+
+  }
+  checker = 0;
+}
 
 ESP8266WiFiMulti WiFiMulti;
 WebSocketsClient webSocket;
@@ -95,6 +156,8 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 		break;
 	}
 }
+
+
 
 void setup()
 {
