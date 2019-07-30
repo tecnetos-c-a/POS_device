@@ -9,9 +9,7 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
-
 #include <WebSocketsClient.h>
-
 #include <Hash.h>
 
 #include <Wire.h>			   // This library is already built in to the Arduino IDE
