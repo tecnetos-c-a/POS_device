@@ -5,7 +5,6 @@
  *	GRUPO TECNETOS C.A. 
  */
 
-
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
@@ -36,8 +35,7 @@ LiquidCrystal_I2C lcd(DTYPE, DCOLS, DROWS); //creacion de objeto
 
 //------------Display	2----------------------
 
-U8G2_SSD1306_128X64_NONAME_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 17, /* data=*/ 4, /* cs=*/ 15, /* dc=*/ 2, /* reset=*/ 16);
-
+U8G2_SSD1306_128X64_NONAME_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/17, /* data=*/4, /* cs=*/15, /* dc=*/2, /* reset=*/16);
 
 //-------------Teclado-----------------------
 const byte ROWS = 4; //four rows
@@ -57,56 +55,63 @@ unsigned int pagos[3] = {0, 0, 0};
 String mensa[3];
 unsigned int monto;
 
-void keypadamount(){
+void keypadamount()
+{
 
-   u8g2.firstPage();
-    do {
-      u8g2.setFont(u8g2_font_ncenB14_tr);
-      u8g2.drawStr(0,20,"Monto: ");
-    } while ( u8g2.nextPage() );
-  
-  while (checker < 20){
+	u8g2.firstPage();
+	do
+	{
+		u8g2.setFont(u8g2_font_ncenB14_tr);
+		u8g2.drawStr(0, 20, "Monto: ");
+	} while (u8g2.nextPage());
 
-   char key = keypad.getKey();
+	while (checker < 20)
+	{
 
-   if (key != NO_KEY){
-    
-   String virtkey = String(key);
-   
-   if (virtkey == "*"){
-    memset(maxdig, 0, 20);
-    checker = 20;
-   }
+		char key = keypad.getKey();
 
-   if (virtkey == "#"){
-      u8g2.firstPage();
-    do {
-      u8g2.setFont(u8g2_font_ncenB14_tr);
-      u8g2.drawStr(0,20,"...");
-    } while ( u8g2.nextPage() );
-    
-    checker = 20;
-   }
-   else{
+		if (key != NO_KEY)
+		{
 
-    maxdig[checker] = key;
-    checker++;
-    
-    Serial.println(maxdig);
+			String virtkey = String(key);
 
-    u8g2.firstPage();
-    do {
-      u8g2.setFont(u8g2_font_ncenB14_tr);
-      u8g2.drawStr(0,20,"Monto: ");
-      u8g2.drawStr(0,40, maxdig);
+			if (virtkey == "*")
+			{
+				memset(maxdig, 0, 20);
+				checker = 20;
+			}
 
-    } while ( u8g2.nextPage() );
+			if (virtkey == "#")
+			{
+				u8g2.firstPage();
+				do
+				{
+					u8g2.setFont(u8g2_font_ncenB14_tr);
+					u8g2.drawStr(0, 20, "...");
+				} while (u8g2.nextPage());
 
-   }
-   }
+				checker = 20;
+			}
+			else
+			{
 
-  }
-  checker = 0;
+				maxdig[checker] = key;
+				checker++;
+
+				Serial.println(maxdig);
+
+				u8g2.firstPage();
+				do
+				{
+					u8g2.setFont(u8g2_font_ncenB14_tr);
+					u8g2.drawStr(0, 20, "Monto: ");
+					u8g2.drawStr(0, 40, maxdig);
+
+				} while (u8g2.nextPage());
+			}
+		}
+	}
+	checker = 0;
 }
 
 ESP8266WiFiMulti WiFiMulti;
@@ -137,7 +142,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 		USE_SERIAL.printf("[WSc] get text: %s\n", payload);
 
 		// send message to server
-		 webSocket.sendTXT("ID: " + mensa[1] + "Clave: " + mensa[2] + "Moneda: " + mensa[3]);
+		webSocket.sendTXT("ID: " + mensa[1] + "Clave: " + mensa[2] + "Moneda: " + mensa[3]);
 		break;
 	case WStype_BIN:
 		USE_SERIAL.printf("[WSc] get binary length: %u\n", length);
@@ -156,8 +161,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 		break;
 	}
 }
-
-
 
 void setup()
 {
@@ -222,7 +225,7 @@ void loop()
 		// Enviamos serialemente su UID Leer tarjeta
 		USE_SERIAL.print("Card UID:");
 		for (byte i = 0; i < mfrc522.uid.size; i++)
-		{	
+		{
 			USE_SERIAL.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
 			USE_SERIAL.print(mfrc522.uid.uidByte[i], HEX);
 		}
