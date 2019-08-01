@@ -12,7 +12,7 @@
 #include <WebSocketsClient.h>
 #include <Hash.h>
 
-#include <Wire.h>			   // This library is already built in to the Arduino IDE
+#include <Wire.h>			   //This library is already built in to the Arduino IDE
 #include <LiquidCrystal_I2C.h> //This library you can add via Include Library > Manage Library >
 
 #include <U8g2lib.h>
