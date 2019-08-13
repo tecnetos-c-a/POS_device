@@ -221,7 +221,7 @@ void loop()
 	if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial())
 	{
 		// Enviamos serialemente su UID Leer tarjeta
-		USE_SERIAL.print("Card UID:");
+		USE_SERIAL.print("Card NUID:");
 		for (byte i = 0; i < mfrc522.uid.size; i++)
 		{
 			USE_SERIAL.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
